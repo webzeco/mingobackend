@@ -49,12 +49,15 @@ exports.getMe = catchAsync(async (req, res, next) => {
   //   select: "-users  -_id -passwordChangedAt -__v",
   // });
   if (!me) {
-    return next(
-      new AppError(
-        "This route is not for changing password use updateMyPassword",
-        400
-      )
-    );
+    res.status(200).json({
+      data: null,
+    });
+    // return next(
+    //   new AppError(
+    //     "This route is not for changing password use updateMyPassword",
+    //     400
+    //   )
+    // );
   }
   res.status(200).json({
     data: me,

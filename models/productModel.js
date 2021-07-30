@@ -7,7 +7,11 @@ const productSchema = new mongoose.Schema(
       ref: "User",
       required: [true, "product must be belong to user"],
     },
-    title: {
+    reviews: [{
+      type: mongoose.Schema.ObjectId,
+      ref: "Review"
+        }],
+    name: {
       type: String,
       required: [true, "Title  is required"],
     },
@@ -59,13 +63,21 @@ const productSchema = new mongoose.Schema(
       type: String,
       default: "Signature",
     }, //If empty then custom writting option will be disable and if not empty then we will take text input as text in string
-    reviews: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: "Customer",
-        required: [true, "Review must be belong to Customer"],
-      },
-    ],
+    // reviews: [
+    //   {
+    //     type: mongoose.Schema.ObjectId,
+    //     ref: "Customer",
+    //     required: [true, "Review must be belong to Customer"],
+    //   },
+    // ],
+    category: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
     variants: [
 
       {
@@ -75,7 +87,6 @@ const productSchema = new mongoose.Schema(
         ],
       }
     ],
-    description:String
   },
   {
     toJSON: {

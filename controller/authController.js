@@ -56,12 +56,13 @@ const createAndSendToken = (user, statusCode, res) => {
 
 exports.signUp = catchAsync(async (req, res) => {
   const newUser = await User.create({
-    // role: req.body.role,
+    role: req.body.role,
     name: req.body.username,
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
+    contactNo:req.body.contactNo
   });
   const cart=await Cart.create({customer:newUser._id});
   createAndSendToken(newUser, 201, res);

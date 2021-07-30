@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const OrderSchema = new mongoose.Schema({
+
   discount: {
     type: Number,
   },
@@ -58,21 +59,24 @@ const OrderSchema = new mongoose.Schema({
     type: Date,
     default: new Date(),
   },
-  items: [
-    {
-    quantity:Number,
-    price:Number,
-    item:{
-      type: mongoose.Schema.ObjectId,
-      ref: "Product",
-      required: [true, "items must be belong to Product"],
-    } }
-  ],
+   orderItems: [
+      {
+        name: { type: String, required: true },
+        qty: { type: Number, required: true },
+        image: { type: String, required: true },
+        price: { type: Number, required: true },
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          ref: 'Product',
+        },
+      },
+    ],
 });
 OrderSchema.pre('save', function(next) {
   let total=0;
-  this.items.map(item=>{
-    total+=(item.price*item.quantity)
+  this.orderItems.map(item=>{
+    total+=(item.price*item.qty)
   });
   this.subtotal=total;
   next();

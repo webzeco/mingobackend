@@ -41,18 +41,45 @@ exports.saveImages = catchAsync(async (req, res, next) => {
 
 exports.addProduct = catchAsync(async (req, res) => {
     const data=req.body;
-    data.variants=JSON.parse(data.variants)
-    console.log(data.variants);
-    console.log(req.file);
     data.addedBy=req.user;
-  const newUser = await Product.create(data);
+    console.log({data});
+  const product = await Product.create(data);
 //   await Admin.findByIdAndUpdate(req.user.id, {
 //     $push: { users: [newUser.id] },
 //   });
   res.status(201).json({
     status: "success",
-    newUser,
+    product,
   });
+})
+
+exports.deleteProduct = catchAsync(async (req, res) => {
+  const id=req.params.id;
+const product = await Product.findByIdAndDelete(id);
+res.status(200).json({
+  status: "success",
+  product,
+});
+})
+
+exports.updateProduct = catchAsync(async (req, res) => {
+  const {id}=req.params;
+  const data=req.body;
+  data.addedBy=req.user;
+  console.log({data});
+const product = await Product.findByIdAndUpdate(id,data);
+res.status(201).json({
+  status: "success",
+  product,
+});
+});
+exports.addProductImages= catchAsync(async (req, res) => {
+  const {id}=req.params;
+const product = await Product.findByIdAndUpdate(id,{images:req.body.images});
+res.status(201).json({
+  status: "success",
+  product,
+});
 });
 
 exports.getAllProducts=catchAsync(async (req, res) => {

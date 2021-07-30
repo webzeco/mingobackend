@@ -7,6 +7,7 @@ Router.use(authController.restrictTo('admin','user'));
 Router.post("/addOrder", orderController.addOrder);
 Router.get("/allOrders", orderController.getAllOrders);
 Router.get("/detail/:id", orderController.getOrderDetail);
+Router.post('/payment',orderController.getPayment);
 
 
 

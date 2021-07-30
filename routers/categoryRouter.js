@@ -2,7 +2,7 @@ const express = require("express");
 const Router = express.Router();
 const authController = require("../controller/authController");
 const categoryController = require("../controller/categoryController");
-Router.use(authController.protect);
+// Router.use(authController.protect);
 Router.post("/addCategory", categoryController.addcategory);
 Router.patch(
   "/addSubCategory/:category",

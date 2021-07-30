@@ -1,4 +1,12 @@
 const express = require("express");
+const path=require('path');
+const cors=require('cors');
+const morgan = require("morgan");
+const dotenv = require('dotenv');
+const uuid=require('uuid');
+const stripe = require("stripe")("");
+
+
 const app = express();
 const authRouter = require("./routers/authRouter");
 const userRouter = require("./routers/userRouter");
@@ -8,10 +16,6 @@ const categoryRouter = require("./routers/categoryRouter");
 const orderRouter=require('./routers/orderRouter');
 const cartRouter=require('./routers/cartRouter');
 
-const path=require('path');
-const cors=require('cors');
-const morgan = require("morgan");
-const dotenv = require('dotenv');
 
 dotenv.config({
     path: './config.env'
@@ -43,6 +47,7 @@ app.use("/api/v1/order",orderRouter);
 app.use("/api/v1/cart",cartRouter);
 
 
+// console.log('Data Imported!'.green.inverse)
 
 
 // app.use("/", viewRouts);
