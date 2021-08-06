@@ -23,6 +23,8 @@ const OrderSchema = new mongoose.Schema({
   },
   // shippingCharges: Number,
   shipping:{
+    firstName:String,
+    lastName:String,
     status:{
       type:String,
       enum:['done','pending'],
@@ -40,10 +42,18 @@ const OrderSchema = new mongoose.Schema({
       type:String,
       required:true
     },
-    area:{
+    zip: {
+      type:Number,
+      required:true
+    },
+   email :{
       type:String,
       required:true
     },
+    // area:{
+    //   type:String,
+    //   required:true
+    // },
     contactNo:{
       type:String,
       required:true
@@ -58,6 +68,16 @@ const OrderSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: new Date(),
+  },
+  paymentMethod: {
+    type: String,
+    required: true,
+  },
+  paymentResult: {
+    id: { type: String },
+    status: { type: String },
+    update_time: { type: String },
+    email_address: { type: String },
   },
    orderItems: [
       {

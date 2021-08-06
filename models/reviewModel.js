@@ -3,7 +3,7 @@ const reviewSchema = new mongoose.Schema({
         
         customer: {
             type: mongoose.Schema.ObjectId,
-            ref: "Customer",
+            ref: "User",
             required: [true, "Review must be belong to Customer"],
         },
         product: {
@@ -15,9 +15,24 @@ const reviewSchema = new mongoose.Schema({
             type:Number,
             required:[true,'Rating required']
         },
+        createdAt: {
+            type:Date,
+            default:new Date()
+        },
         feedback: {
             type:String,
         }
+});
+reviewSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "customer",
+    select: "name",
+  });
+  this.populate({
+    path: "product",
+    select: "name price",
+  });
+next();
 });
 const Review = mongoose.model("Review", reviewSchema);
 module.exports = Review;

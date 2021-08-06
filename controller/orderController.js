@@ -1,5 +1,5 @@
-const stripe= require("stripe");
-const uuid=require("uuid");
+const stripe= require("stripe")("sk_test_51JL45oFh5EerqhFKJV0faXHcvKzvvP9492MHJ8Ujy9DEWOf65ztiwnaQ1sDVS7zIOimyO26KvaliRa0KIgsWgcZ90024MY94db");
+const uuid=require("uuid").v4;
 const Order = require("../models/OrderModel");
 const catchAsync = require("../utils/catchAsync");
 exports.addOrder = catchAsync(async (req, res) => {
@@ -17,19 +17,33 @@ exports.addOrder = catchAsync(async (req, res) => {
 
 exports.getPayment = catchAsync(async (req, res) => {
   const {product,token} = req.body;
-  console.log("Product",product);
-  console.log("Price",product.price);
+  console.log({"Product":product});
+  console.log({"token":token});
   const idompontencyKey=uuid();
-  return stripe.customers
-  data.customer = req.user;
-  const order = await Order.create(data);
+  return stripe.customers.create({
+    email:token.email,
+    source:token.id
+  }).then(customer=>{
+    stripe.charges.create({
+      amount:product.price,
+      customer:customer.id,
+      receipt_email:token.email,
+      description:`purchases of ${product.price}`,
+    },{idompontencyKey})
+  }).then(result=>{
+    console.log({result});
+    res.status(200).json({
+      result
+    });
+  }).catch(err=>{
+    console.log(err);
+  })
+  // data.customer = req.user;
+  // const order = await Order.create(data);
   //   await Admin.findByIdAndUpdate(req.user.id, {
   //     $push: { users: [newUser.id] },
   //   });
-  res.status(201).json({
-    status: "success",
-    order,
-  });
+  
 });
 
 exports.getAllOrders = catchAsync(async (req, res) => {

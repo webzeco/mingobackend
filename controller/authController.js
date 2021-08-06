@@ -1,5 +1,6 @@
 const catchAsync = require("../utils/catchAsync");
 const User = require("../models/userModel");
+var SibApiV3Sdk = require('sib-api-v3-sdk');
 
 const AppError = require("../utils/appError");
 const { promisify } = require("util");
@@ -190,24 +191,56 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     validator: false,
   });
   // 3) Send it to user's email
-  try {
-    const resetURL = `${process.env.FRONT_URL}/resetPassword/${resetToken}`;
-    await new Email(user, resetURL).sendPasswordReset();
-    // send response to user
-    res.status(200).json({
-      status: "success",
-      message: "Token sent to email!",
-    });
-  } catch (err) {
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
-    await user.save({ validateBeforeSave: false });
-    console.log(err);
-    return next(
-      new AppError("There was an error sending the email. Try again later!"),
-      500
-    );
-  }
+  // try {
+  //   const resetURL = `${process.env.FRONT_URL}/resetPassword/${resetToken}`;
+  //   await new Email(user, resetURL).sendPasswordReset();
+  //   // send response to user
+  //   res.status(200).json({
+  //     status: "success",
+  //     message: "Token sent to email!",
+  //   });
+  // } catch (err) {
+  //   user.passwordResetToken = undefined;
+  //   user.passwordResetExpires = undefined;
+  //   await user.save({ validateBeforeSave: false });
+  //   console.log(err);
+  //   return next(
+  //     new AppError("There was an error sending the email. Try again later!"),
+  //     500
+  //   );
+  // }
+var defaultClient = SibApiV3Sdk.ApiClient.instance;
+// Configure API key authorization: api-key
+var apiKey = defaultClient.authentications['api-key'];
+apiKey.apiKey = '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';
+// Uncomment below two lines to configure authorization using: partner-key
+// var partnerKey = defaultClient.authentications['partner-key'];
+// partnerKey.apiKey = 'YOUR API KEY';
+var apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+var sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
+sendSmtpEmail = {
+    to: [{
+        email: '18251598-126@uog.edu.pk',
+        name: 'ABDULREHMAN'
+    }],
+    templateId: 59,
+    params: {
+        name: 'ABDUL',
+        surname: 'REHMAN'
+    },
+    headers: {
+        'X-Mailin-custom': 'custom_header_1:custom_value_1|custom_header_2:custom_value_2'
+    }
+};
+apiInstance.sendTransacEmail(sendSmtpEmail).then(function(data) {
+  console.log('API called successfully. Returned data: ' + data);
+}, function(error) {
+  console.error(error);
+});
+res.status(200).json({
+  status:"Success",
+  message:"email sent successfully!!!"
+})
 });
 // RESET PASSWORD MODULES
 exports.resetPassword = catchAsync(async (req, res, next) => {

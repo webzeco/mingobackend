@@ -5,11 +5,16 @@ exports.addReview = catchAsync(async (req, res) => {
     const data=req.body;
     data.customer=req.user;
   const review = await Review.create(data);
-//   await Admin.findByIdAndUpdate(req.user.id, {
-//     $push: { users: [newUser.id] },
-//   });
   res.status(201).json({
     status: "success",
-    newUser: review,
+    data: review,
   });
+});
+
+exports.getAllReviews = catchAsync(async (req, res) => {
+const reviews = await Review.find().populate([""]);
+res.status(200).json({
+  status: "success",
+  data: reviews,
+});
 });

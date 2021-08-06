@@ -11,7 +11,7 @@ const productSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: "Review"
         }],
-    name: {
+    title: {
       type: String,
       required: [true, "Title  is required"],
     },
