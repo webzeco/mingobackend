@@ -27,7 +27,8 @@
     "stripe": "^8.167.0",
     "uuid": "^8.3.2",
     "validator": "^13.6.0",
-    "xss-clean": "^0.1.1"
+    "xss-clean": "^0.1.1",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "eslint": "^7.25.0",
