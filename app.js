@@ -17,6 +17,9 @@ const orderRouter=require('./routers/orderRouter');
 const cartRouter=require('./routers/cartRouter');
 
 
+app.use(cors({
+  origin: '*'
+}));
 dotenv.config({
     path: './config.env'
 });
@@ -30,7 +33,6 @@ app.use((req,res,next)=>{
 next();
 });
 
-app.use(cors());
 app.use(express.json());
 app.use(cors({origin:true}));
 if(process.env.NODE_ENV==='development')  app.use(morgan('dev'));
