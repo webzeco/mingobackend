@@ -1,15 +1,18 @@
 const mongoose = require("mongoose");
 const reviewSchema = new mongoose.Schema({
-        
-        customer: {
-            type: mongoose.Schema.ObjectId,
-            ref: "User",
-            required: [true, "Review must be belong to Customer"],
-        },
+        // customer: {
+        //     type: mongoose.Schema.ObjectId,
+        //     ref: "User",
+        //     required: [true, "Review must be belong to Customer"],
+        // },
+       
+        name:String,
+        email:String,
+        reviewTitle:String,
         product: {
             type: mongoose.Schema.ObjectId,
             ref: "Product",
-            required: [true, "Review must be belong to Product"],
+            // required: [true, "Review must be belong to Product"],
         },
         rating: {
             type:Number,

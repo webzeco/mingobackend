@@ -2,9 +2,10 @@
 const Review = require("../models/reviewModel");
 const catchAsync = require("../utils/catchAsync");
 exports.addReview = catchAsync(async (req, res) => {
-    const data=req.body;
-    data.customer=req.user;
-  const review = await Review.create(data);
+  console.log(req.body);
+    const {name,email,rating,reviewTitle,feedback,product}=req.body;
+    console.log({name,email,rating,reviewTitle,feedback,product});
+  const review = await Review.create({name,email,rating,reviewTitle,feedback,product});
   res.status(201).json({
     status: "success",
     data: review,
@@ -18,3 +19,10 @@ res.status(200).json({
   data: reviews,
 });
 });
+exports.deleteReview = catchAsync(async (req, res) => {
+await Review.findByIdAndDelete(req.params.id);
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
+  });

@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 
 const OrderSchema = new mongoose.Schema({
-
+  name:String,
+  contactNo:String,
   discount: {
     type: Number,
   },
   confirmedBy: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
-    required: [true, "confirmation must be belong to User"],
   },
   subtotal: {
     type: Number,
@@ -62,8 +62,7 @@ const OrderSchema = new mongoose.Schema({
   },
   orderBy: {
     type: mongoose.Schema.ObjectId,
-    ref: "User",
-    required: [true, "order must be belong to User"],
+    ref: "User"
   },
   createdAt: {
     type: Date,
@@ -71,9 +70,9 @@ const OrderSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    required: true,
   },
-  paymentResult: {
+  payment: {
+    charge:{},
     id: { type: String },
     status: { type: String },
     update_time: { type: String },
@@ -93,12 +92,17 @@ const OrderSchema = new mongoose.Schema({
       },
     ],
 });
+// OrderSchema.pre('save', function(next) {
+//   let total=0;
+//   this.orderItems.map(item=>{
+//     console.log({me:item.price});
+//     total=total+(item.price*item.qty)
+//   });
+//   this.subtotal=total;
+//   next();
+// });
 OrderSchema.pre('save', function(next) {
-  let total=0;
-  this.orderItems.map(item=>{
-    total+=(item.price*item.qty)
-  });
-  this.subtotal=total;
+  this.total=this.subtotal+this.shipping.charges;
   next();
 });
 const Order = mongoose.model("Order", OrderSchema);
