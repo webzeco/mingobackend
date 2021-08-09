@@ -5,9 +5,12 @@ const uuid = require("uuid").v4;
 const Order = require("../models/OrderModel");
 const catchAsync = require("../utils/catchAsync");
 exports.addOrder = catchAsync(async (req, res) => {
-  const {data} = req.body;
+  const { data } = req.body;
   data.customer = req.user;
-  console.log({order:data});
+  data.name = "Muhammad Umer";
+  data.email = "test@gmail.com";
+  console.log({ order: data });
+  
   const order = await Order.create(data);
   res.status(201).json({
     status: "success",
@@ -29,26 +32,24 @@ exports.getPayment = catchAsync(async (req, res) => {
       console.log(product.price);
       stripe.charges.create(
         {
-          amount: Math.round((product.price/100)*164),
+          amount: Math.round((product.price / 100) * 164),
           currency: "usd",
           customer: customer.id,
           receipt_email: token.email,
           description: `Purchases of ${product.price}`,
         },
         (err, data) => {
-          if(err) 
+          if (err)
             res.status(200).json({
-              status:"failed",
+              status: "failed",
               charge: err,
             });
-         else{
-
-          res.status(200).json({
-            status:"success",
+          else {
+            res.status(200).json({
+              status: "success",
               charge: data,
             });
-         }
-        
+          }
         }
       );
     })
@@ -77,5 +78,5 @@ exports.getOrderDetail = catchAsync(async (req, res) => {
 });
 
 //   await Admin.findByIdAndUpdate(req.user.id, {
-  //     $push: { users: [newUser.id] },
-  //   });
+//     $push: { users: [newUser.id] },
+//   });

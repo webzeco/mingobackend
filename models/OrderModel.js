@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const OrderSchema = new mongoose.Schema({
   name:String,
+  email:String,
   contactNo:String,
   discount: {
     type: Number,
@@ -78,16 +79,17 @@ const OrderSchema = new mongoose.Schema({
     update_time: { type: String },
     email_address: { type: String },
   },
-   orderItems: [
+   products: [
       {
-        name: { type: String, required: true },
-        qty: { type: Number, required: true },
-        image: { type: String, required: true },
-        price: { type: Number, required: true },
+        addBucket: { type: Boolean, required: true },
+        quantity: { type: Number, required: true },
+        // image: { type: String, required: true },
+        basePrice: { type: Number, required: true },
+        totalProductPrice:{type:Number,required:true},
         product: {
-          type: mongoose.Schema.Types.ObjectId,
-          required: true,
-          ref: 'Product',
+          // type: mongoose.Schema.Types.ObjectId,
+          // required: true,
+          // ref: 'Product',
         },
       },
     ],

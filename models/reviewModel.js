@@ -33,7 +33,7 @@ reviewSchema.pre(/^find/, function (next) {
   });
   this.populate({
     path: "product",
-    select: "name price",
+    select: "title price",
   });
 next();
 });
