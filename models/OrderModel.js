@@ -91,7 +91,7 @@ const OrderSchema = new mongoose.Schema({
           // required: true,
           // ref: 'Product',
         },
-      },
+    },
     ],
 });
 // OrderSchema.pre('save', function(next) {

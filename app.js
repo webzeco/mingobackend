@@ -34,7 +34,7 @@ next();
 });
 
 app.use(express.json());
-app.use(cors({origin:true}));
+// app.use(cors({origin:true}));
 if(process.env.NODE_ENV==='development')  app.use(morgan('dev'));
 
 app.use(express.static(path.join(__dirname,"public")));
