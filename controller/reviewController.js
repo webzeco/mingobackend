@@ -19,6 +19,7 @@ res.status(200).json({
   data: reviews,
 });
 });
+
 exports.deleteReview = catchAsync(async (req, res) => {
 await Review.findByIdAndDelete(req.params.id);
   res.status(204).json({
@@ -26,3 +27,12 @@ await Review.findByIdAndDelete(req.params.id);
     data: null,
   });
   });
+  exports.updateReview = catchAsync(async (req, res) => {
+    const {favorite}=req.body;
+    await Review.findByIdAndUpdate(req.params.id,{favorite:favorite});
+    const data= await Review.find();
+      res.status(200).json({
+        status: "success",
+        data: data,
+      });
+      });

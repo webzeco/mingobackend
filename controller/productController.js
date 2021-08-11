@@ -8,7 +8,7 @@ const imagesStorage = multer.diskStorage({
     cb(null, "public/img/");
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + "-" + Date.now() + "-" +file.originalname);
+    cb(null, file.originalname);
   },
 });
 
@@ -83,7 +83,7 @@ res.status(201).json({
 });
 
 exports.getAllProducts=catchAsync(async (req, res) => {
-const data = await Product.find();
+const data = await Product.find().populate('reviews');;
 res.status(200).json({
   status: "success",
   data,

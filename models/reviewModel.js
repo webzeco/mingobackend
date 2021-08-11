@@ -24,6 +24,10 @@ const reviewSchema = new mongoose.Schema({
         },
         feedback: {
             type:String,
+        },
+        favorite:{
+          type:Boolean,
+          default:false
         }
 });
 reviewSchema.pre(/^find/, function (next) {

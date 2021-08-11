@@ -7,10 +7,10 @@ const productSchema = new mongoose.Schema(
       ref: "User",
       required: [true, "product must be belong to user"],
     },
-    reviews: [{
-      type: mongoose.Schema.ObjectId,
-      ref: "Review"
-        }],
+    // reviews: [{
+    //   type: mongoose.Schema.ObjectId,
+    //   ref: "Review"
+    //     }],
     title: {
       type: String,
       required: [true, "Title  is required"],
@@ -79,11 +79,10 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     variants: [
-
       {
         selectedOption: String,
         tags: [
-          { id:Number, text: String}
+          { id:Number,img:String, text: String}
         ],
       }
     ],
@@ -168,5 +167,10 @@ reviewSchema.post(/^findOneAnd/, async function () {
   await this.Rew.constructor.calcAverageRatings(this.Rew.tour._id);
 });
 */
+productSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'product',
+  localField: '_id'
+});
 const Product = mongoose.model("Product", productSchema);
 module.exports = Product;
