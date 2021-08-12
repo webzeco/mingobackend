@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
-
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -37,11 +36,11 @@ const userSchema = new mongoose.Schema({
     enum: ["admin", "user","customer"],
     default: "customer",
   },
-  
   contactNo:{
     type:String,
-    required:true
-  },  passwordChangedAt: {
+    // required:true
+  },
+   passwordChangedAt: {
     type: Date,
     select: true,
   },
@@ -51,7 +50,7 @@ const userSchema = new mongoose.Schema({
   active: {
     type: Boolean,
     default: true,
-    select: false,
+  select: false,
   },
 });
 

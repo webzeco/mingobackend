@@ -4,9 +4,10 @@ const authController = require("../controller/authController");
 // const userController = require("./../controller/userController");
 Router.post("/signUp", authController.signUp);
 Router.post("/login", authController.login);
-Router.post("/forgot", authController.forgotPassword);
+// Router.post("/login", authController.sendEmail);
+Router.post("/forgotPassword", authController.forgotPassword);
+Router.patch("/resetPassword/:token", authController.resetPassword);
 Router.use(authController.protect);
 Router.patch("/updatePassword", authController.updatePassword);
 // Router.patch("/updateMe", userController.updateMe);
-
 module.exports = Router;

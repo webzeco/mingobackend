@@ -1,12 +1,13 @@
 const catchAsync = require("../utils/catchAsync");
 const User = require("../models/userModel");
-var SibApiV3Sdk = require('sib-api-v3-sdk');
-
+var SibApiV3Sdk = require("sib-api-v3-sdk");
+const Crypto = require("crypto");
 const AppError = require("../utils/appError");
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const Email = require("../utils/email");
 const Cart = require("../models/cartModel");
+const nodeMailjet = require("node-mailjet");
 
 const signToken = (user) => {
   const { name, role, email, _id: id } = user;
@@ -44,8 +45,8 @@ const createAndSendToken = (user, statusCode, res) => {
   // res.cookie('name',"abdulrehman",cookieOptions)
   // removing new created user password
   user.password = undefined;
-  res.header('x-token', token);
-  res.header('access-control-expose-headers', 'x-token')
+  res.header("x-token", token);
+  res.header("access-control-expose-headers", "x-token");
   // if (app.locals)  app.locals.user = user;
   // res.locals.user=user;
   res.status(statusCode).json({
@@ -56,22 +57,20 @@ const createAndSendToken = (user, statusCode, res) => {
 };
 
 exports.signUp = catchAsync(async (req, res) => {
+  const { username, email, password, passwordConfirm } = req.body.user;
   const newUser = await User.create({
-    role: req.body.role,
-    name: req.body.username,
-    email: req.body.email,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-    passwordChangedAt: req.body.passwordChangedAt,
-    contactNo:req.body.contactNo
+    name: username,
+    email,
+    password,
+    passwordConfirm,
   });
-  const cart=await Cart.create({customer:newUser._id});
+  const cart = await Cart.create({ customer: newUser._id });
   createAndSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
   const { name, password } = req.body;
-  console.log({body:req.body});
+  console.log({ body: req.body });
   if (!name || !password)
     return next(new AppError("please enter complete detail", 403));
   const user = await User.findOne({ name }).select("+password");
@@ -83,24 +82,24 @@ exports.login = catchAsync(async (req, res, next) => {
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
   // 1 ) check the token have user
-  if (req.headers["x-token"] ) {
+  if (req.headers["x-token"]) {
     token = req.headers["x-token"];
     // console.log({newToken:token});
-  } 
-//   else if (
-//     req.headers.authorization
-//     //  &&
-//     // req.headers.authorization.startsWith("Bearer")
-//   ) {
-//     // token = req.headers.authorization.split(" ")[1];
-//     token=req.headers.authorization.substr(4);
-//     console.log({mytoken:token});
-// }
+  }
+  //   else if (
+  //     req.headers.authorization
+  //     //  &&
+  //     // req.headers.authorization.startsWith("Bearer")
+  //   ) {
+  //     // token = req.headers.authorization.split(" ")[1];
+  //     token=req.headers.authorization.substr(4);
+  //     console.log({mytoken:token});
+  // }
   //  else if (req.headers.cookie) {
   //   // console.log({cookie:req.headers.cookie});
   //   // console.log({subcookie:req.headers.cookie.substr(4)});
   //   token =   req.headers.cookie.substr(4);
-  // } 
+  // }
   else {
     return next(
       new AppError("You are not login please login anb get access", 401)
@@ -113,7 +112,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   // console.log(token);
   // console.log("Protector");
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  
+
   // if verification if pass then decoded value  like below
   // decoded={
   //   id: '5f08ac1c6aa46f0df451d8db',
@@ -124,7 +123,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   // console.log("current user");
   // console.log(decoded);
   // console.log("current user");
-  let currentUser = await User.findOne({name:decoded.name});
+  let currentUser = await User.findOne({ name: decoded.name });
   if (!currentUser)
     return next(
       new AppError("No user belong to this token please try again", 401)
@@ -171,7 +170,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
   await user.save();
-  req.user=user;
+  req.user = user;
   createAndSendToken(user, 200, res);
 });
 
@@ -181,7 +180,10 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     active: true,
   });
   if (!user) {
-    return next(new AppError("There is no user with that email ..!!!", 401));
+    res.status(200).json({
+      status: "failed",
+      message: "There is no user with that email ..!!!",
+    });
   }
   // 2)  create new random  token for reset password
   const resetToken = user.createResetPasswordToken();
@@ -209,52 +211,141 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   //     500
   //   );
   // }
-var defaultClient = SibApiV3Sdk.ApiClient.instance;
-// Configure API key authorization: api-key
-var apiKey = defaultClient.authentications['api-key'];
-apiKey.apiKey = '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';
-// Uncomment below two lines to configure authorization using: partner-key
-// var partnerKey = defaultClient.authentications['partner-key'];
-// partnerKey.apiKey = 'YOUR API KEY';
-var apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-var sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
-sendSmtpEmail = {
-    to: [{
-        email: '18251598-126@uog.edu.pk',
-        name: 'ABDULREHMAN'
-    }],
-    templateId: 59,
-    params: {
-        name: 'ABDUL',
-        surname: 'REHMAN'
-    },
-    headers: {
-        'X-Mailin-custom': 'custom_header_1:custom_value_1|custom_header_2:custom_value_2'
-    }
-};
-apiInstance.sendTransacEmail(sendSmtpEmail).then(function(data) {
-  console.log('API called successfully. Returned data: ' + data);
-}, function(error) {
-  console.error(error);
-});
-res.status(200).json({
-  status:"Success",
-  message:"email sent successfully!!!"
-})
+  let resetURL;
+  if (user.role==="customer") {
+    resetURL = `${process.env.CUSTOMER_URL}/resetPassword/${resetToken}`; 
+  }else{
+    resetURL = `${process.env.STAFF_URL}/resetPassword/${resetToken}`;
+  }
+  const html = `
+<!doctype html>
+<html lang="en-US">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>Reset Password Email Template</title>
+    <meta name="description" content="Reset Password Email Template.">
+    <style type="text/css">
+        a:hover {text-decoration: underline !important;}
+    </style>
+</head>
+<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
+    <!--100% body table-->
+    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
+        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
+        <tr>
+            <td>
+                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
+                    align="center" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="height:80px;">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">
+                          <a  title="logo" target="_blank">
+                            <img width="60" src="https://i.ibb.co/hL4XZp2/android-chrome-192x192.png" title="logo" alt="logo">
+                          </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="height:20px;">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0"
+                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
+                                <tr>
+                                    <td style="height:40px;">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:0 35px;">
+                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:32px;font-family:'Rubik',sans-serif;">You have
+                                            requested to reset your password</h1>
+                                        <span
+                                            style="display:inline-block; vertical-align:middle; margin:29px 0 26px; border-bottom:1px solid #cecece; width:100px;"></span>
+                                        <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
+                                        Your password reset token (valid for only 10 minutes). To reset your password, click the
+                                            following link and follow the instructions.
+                                        </p>
+                                        <a href="${resetURL}"
+                                            style="background:#20e277;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">Reset
+                                            Password</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="height:40px;">&nbsp;</td>
+                                </tr>
+                            </table>
+                        </td>
+                    <tr>
+                        <td style="height:20px;">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">
+                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong></strong></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="height:80px;">&nbsp;</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <!--/100% body table-->
+</body>
+
+</html>`;
+  const mailjet = nodeMailjet.connect(
+    process.env.MJ_APIKEY_PUBLIC,
+    process.env.MJ_APIKEY_PRIVATE
+  );
+  const request = mailjet.post("send", { version: "v3.1" }).request({
+    Messages: [
+      {
+        From: {
+          Email: "fullstacknodedeveloper@gmail.com",
+          Name: "MiniGo",
+        },
+        To: [
+          {
+            Email: req.body.email,
+          },
+        ],
+        Subject: "Reset Password",
+        TextPart: "Reset Password",
+        HTMLPart: html,
+        CustomID: "AppGettingStartedTest",
+      },
+    ],
+  });
+  request
+    .then((result) => {
+      // console.log(result.body)
+      res.status(200).json({
+        status: "success",
+        message: "email sent successfully!!!",
+      });
+    })
+    .catch((err) => {
+      // console.log(err.statusCode)
+      res.status(200).json({
+        status: "failed",
+        message: "something went Wrong !!!",
+      });
+    });
 });
 // RESET PASSWORD MODULES
 exports.resetPassword = catchAsync(async (req, res, next) => {
-  // // Get user based on token
-  // console.log(req.body);
-  // console.log(req.params.token);
-  // const hashedPass = Crypto
-  //   .createHash("sha256")
-  //   .update(req.params.token)
-  //   .digest("hex");
+  // Get user based on token
+  console.log(req.body);
+  console.log(req.params.token);
+  const hashedPass = Crypto.createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
   // check the user is valid and not expired
   let user;
   user = await User.findOne({
-    // passwordResetToken: hashedPass,
+    passwordResetToken: hashedPass,
     passwordResetExpires: {
       $gt: Date.now(),
     },
@@ -270,8 +361,10 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await user.save({
     validator: true,
   });
-  req.user=user;
+  req.user = user;
   createAndSendToken(user, 200, res);
   // update changePasswordAt property for user
   // login the user with JWT
 });
+
+exports.sendEmail = catchAsync(async (req, res, next) => {});
