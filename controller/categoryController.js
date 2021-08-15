@@ -82,3 +82,6 @@ exports.addcategory = catchAsync(async (req, res) => {
     const data = await Category.find();
     res.status(200).json({ data });
   });
+
+ 
+ 

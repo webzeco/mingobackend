@@ -25,6 +25,7 @@ const multiImageUpload = multer({
   storage: imagesStorage,
   fileFilter: imagesFilter,
 });
+
 exports.uploadMultiImages = multiImageUpload;
 // save to the database in image array
 exports.saveImages = catchAsync(async (req, res, next) => {
@@ -38,6 +39,21 @@ exports.saveImages = catchAsync(async (req, res, next) => {
   next();
 });
 
+const singleImageUpload = multer({
+  storage: imagesStorage,
+  fileFilter: imagesFilter,
+});
+exports.uploadSingleImage = singleImageUpload;
+exports.saveImage = catchAsync(async (req, res, next) => {
+
+  // req.body.image
+  // if (req.files) {
+  //   req.files.map(async (file) => {
+  //     req.body.images.push(file.filename);
+  //   });
+  // }
+  next();
+});
 
 exports.addProduct = catchAsync(async (req, res) => {
     const data=req.body;
@@ -88,4 +104,9 @@ res.status(200).json({
   status: "success",
   data,
 });
+});
+exports.getProductsWithCategories = catchAsync(async (req, res) => {
+  const {category,subcategory}=req.params;
+const data = await Product.find({category:`${category}/${subcategory}`});
+  res.status(200).json({ data });
 });

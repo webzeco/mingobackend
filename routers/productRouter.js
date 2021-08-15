@@ -3,14 +3,17 @@ const Router = express.Router();
 const authController = require("./../controller/authController");
 const productController = require("./../controller/productController");
 Router.get("/allProducts", productController.getAllProducts);
-
+Router.get("/products/:category/:subcategory",
+productController.getProductsWithCategories,
+); 
 Router.use(authController.protect);
 Router.use(authController.restrictTo('admin','user'));
-
 Router.post("/addProduct",
 productController.addProduct,
 );
-
+Router.post("/addBasket",
+productController.addProduct,
+);
 Router.delete("/delete/:id",
 productController.deleteProduct,
 );                                  
