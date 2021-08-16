@@ -15,6 +15,7 @@ const reviewRouter = require("./routers/reviewRouter");
 const categoryRouter = require("./routers/categoryRouter");
 const orderRouter=require('./routers/orderRouter');
 const cartRouter=require('./routers/cartRouter');
+const basketRouter=require('./routers/basketRouter');
 
 
 app.use(cors({
@@ -49,6 +50,7 @@ app.use("/api/v1/review", reviewRouter);
 app.use("/api/v1/category",categoryRouter );
 app.use("/api/v1/order",orderRouter);
 app.use("/api/v1/cart",cartRouter);
+app.use("/api/v1/basket",basketRouter);
 
 
 // console.log('Data Imported!'.green.inverse)

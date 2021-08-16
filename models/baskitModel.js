@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-const baskitSchema = new mongoose.Schema({
+const basketSchema = new mongoose.Schema({
   title: {
     type: String,
-    unique: [true, "This Baskit  is already exits"],
+    unique: [true, "This Basket  is already exits"],
     required: true,
   },
   price:String,
@@ -12,5 +12,5 @@ const baskitSchema = new mongoose.Schema({
     default:true
   }
 });
-const Baskit = mongoose.model("Baskit", categorySchema);
-module.exports = Baskit;
+const Basket = mongoose.model("Basket", basketSchema);
+module.exports = Basket;

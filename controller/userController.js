@@ -6,6 +6,10 @@ exports.getAllUsers = catchAsync(async (req, res) => {
   const users = await User.find({ active: true });
   res.status(200).json({ users });
 });
+exports.getStaff = catchAsync(async (req, res) => {
+  const users = await User.find({ active: true ,role:"customer"});
+  res.status(200).json({ users });
+});
 
 exports.addUser = catchAsync(async (req, res) => {
   const newUser = await User.create(

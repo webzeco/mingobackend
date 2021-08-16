@@ -11,14 +11,12 @@ Router.use(authController.restrictTo('admin','user'));
 Router.post("/addProduct",
 productController.addProduct,
 );
-Router.post("/addBasket",
-productController.addProduct,
-);
+
 Router.delete("/delete/:id",
 productController.deleteProduct,
 );                                  
 Router.patch("/addProductImages/:id",
-productController.uploadMultiImages.array("images", 10), 
+productController.uploadImages.array("images", 10), 
 productController.saveImages,
 productController.addProductImages,
 );

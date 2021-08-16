@@ -21,37 +21,20 @@ const imagesFilter = (req, file, cb) => {
   }
 };
 
-const multiImageUpload = multer({
+const imagesUpload = multer({
   storage: imagesStorage,
   fileFilter: imagesFilter,
 });
 
-exports.uploadMultiImages = multiImageUpload;
+exports.uploadImages = imagesUpload;
 // save to the database in image array
 exports.saveImages = catchAsync(async (req, res, next) => {
-  
   req.body.images = [];
   if (req.files) {
     req.files.map(async (file) => {
       req.body.images.push(file.filename);
     });
   }
-  next();
-});
-
-const singleImageUpload = multer({
-  storage: imagesStorage,
-  fileFilter: imagesFilter,
-});
-exports.uploadSingleImage = singleImageUpload;
-exports.saveImage = catchAsync(async (req, res, next) => {
-
-  // req.body.image
-  // if (req.files) {
-  //   req.files.map(async (file) => {
-  //     req.body.images.push(file.filename);
-  //   });
-  // }
   next();
 });
 

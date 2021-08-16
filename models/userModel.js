@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
     require: [true, "user must have a email "],
     unique: true,
   },
+  image:{
+    type:String,
+    default:'default.jpg'
+  },
   password: {
     type: String,
     required: [true, "user must have a password"],
@@ -44,7 +48,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     select: true,
   },
- 
+  createdAt:{
+    type:Date,
+    default:new Date()
+  },
   passwordResetToken: String,
   passwordResetExpires: Date,
   active: {
