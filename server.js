@@ -1,12 +1,12 @@
 const app = require('./app');
 const mongoose = require('mongoose');
-const morgan = require("morgan");
+// const morgan = require("morgan");
 
 const port = process.env.PORT || 8080;
 
 mongoose
     .connect(process.env.DBCONNECTION, {
-        useNewUrlParser: true,
+        useNewUrlParser: true, 
         useCreateIndex: true,
         useFindAndModify: false,
     }).then(() => {

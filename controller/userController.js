@@ -46,6 +46,28 @@ exports.deleteUser = catchAsync(async (req, res,next) => {
   });
 });
 
+exports.addAddress = catchAsync(async (req, res,next) => {
+  const data=req.body.data;
+  console.log(data);
+  const doc=await User.findByIdAndUpdate(req.params.id, {
+    $push: { addresses: [data] },
+  });
+  // const doc = await User.findOneAndUpdate(
+  //   { _id: req.params.id },
+  //   // { active: false },
+  //   {
+  //     new: trueZ
+  //     runValidators: true,
+  //   }
+  // );
+  if (!doc) {
+    return next(new AppError("NO document found with that name", 404));
+  }
+  res.status(204).json({
+    message: "success",
+  });
+});
+
 exports.getMe = catchAsync(async (req, res, next) => {
   let me = await User.findById(req.user.id);
   // .populate({

@@ -52,6 +52,17 @@ const userSchema = new mongoose.Schema({
     type:Date,
     default:new Date()
   },
+  addresses:[{
+          firstName: String,
+          lastName:String,
+          compony:String,
+          address1:String,
+          address2:String,
+          city:String,
+          province:String,
+          zip:String,
+          contactNo:String
+  }],
   passwordResetToken: String,
   passwordResetExpires: Date,
   active: {

@@ -15,6 +15,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: [true, "Title  is required"],
     },
+    status:{
+      type:Boolean,
+      default:true
+    },
     price: {
       type: Number,
       required: [true, "Title  is required"],
@@ -23,18 +27,18 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     }, //discount will be zero if no discount is offered
-    compareAtPrice: Number,
-    costPerItem: Number,
+    // compareAtPrice: Number,
+    // costPerItem: Number,
     chargeTax: {
       type: Boolean,
       default: false,
     },
-    stockKeepingUnit: String,
-    barcode: String,
-    trackQuantity: {
-      type: Boolean,
-      defaultL: true,
-    },
+    // stockKeepingUnit: String,
+    // barcode: String,
+    // trackQuantity: {
+    //   type: Boolean,
+    //   defaultL: true,
+    // },
     bucketPrice: {
       type: Number,
       default: 5,
@@ -50,6 +54,14 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    onSale:{
+      type:Boolean,
+      default:false
+    },
+    bestSeller:{
+      type:Boolean,
+      default:false
+    },
     images: [String],
     weight: Number,
     estimatedProcessingTime: {
@@ -58,11 +70,13 @@ const productSchema = new mongoose.Schema(
     deliveryTime: {
       type: Boolean,
       default: true,
-    }, //will be used to set Option for delivery on specific date
+    }, 
+    //will be used to set Option for delivery on specific date
     customWriting: {
       type: String,
       default: "Signature",
-    }, //If empty then custom writting option will be disable and if not empty then we will take text input as text in string
+    }, 
+    //If empty then custom writting option will be disable and if not empty then we will take text input as text in string
     // reviews: [
     //   {
     //     type: mongoose.Schema.ObjectId,
@@ -78,11 +92,15 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    createdAt:{
+      type:Date,
+      default:new Date()
+    },
     variants: [
       {
         selectedOption: String,
         tags: [
-          { id:Number,img:String, text: String}
+          { id:Number,img:String, text: String,qty:Number}
         ],
       }
     ],
