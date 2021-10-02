@@ -12,7 +12,7 @@ const OrderSchema = new mongoose.Schema({
     ref: "User",
   },
   guest: {
-    type: String,
+    type: Boolean,
     default: true,
   },
   subtotal: {

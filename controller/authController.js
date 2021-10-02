@@ -70,12 +70,20 @@ exports.signUp = catchAsync(async (req, res) => {
 
 exports.login = catchAsync(async (req, res, next) => {
   const { name, password } = req.body;
-  console.log({ body: req.body });
+  // console.log({ body: req.body });
   if (!name || !password)
     return next(new AppError("please enter complete detail", 403));
   const user = await User.findOne({ name }).select("+password");
   if (!user || !(await user.correctPassword(password, user.password)))
     return next(new AppError("Incorrect username or password", 403));
+    if(req.body.role){
+      if(user.role==='customer')
+      return next(new AppError("Incorrect username or password", 403));
+      if(req.body.role==='admin' && user.role==='user')
+      return next(new AppError("Incorrect username or password", 403));
+      if(req.body.role==='user' && user.role==='admin')
+      return next(new AppError("Incorrect username or password", 403));
+    }
   createAndSendToken(user, 200, res);
 });
 

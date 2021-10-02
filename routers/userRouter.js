@@ -10,7 +10,7 @@ Router.patch("/updateMe", userController.updateMe);
 Router.post("/addUser", userController.addUser);
 Router.get("/me", userController.getMe);
 Router.use(authController.restrictTo("admin"));
-Router.get("/getAll", userController.getAllUsers);
+Router.get("/getAllCustomer", userController.getAllCustomers);
 Router.get("/staff", userController.getStaff);
 Router.patch("/delete/:name", userController.deleteUser);
 

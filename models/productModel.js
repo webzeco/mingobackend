@@ -15,13 +15,16 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: [true, "Title  is required"],
     },
-    status:{
-      type:Boolean,
-      default:true
+    status: {
+      type: Boolean,
+      default: true,
     },
     price: {
       type: Number,
       required: [true, "Title  is required"],
+    },
+    shipping: {
+      type: String,
     },
     discount: {
       type: Number,
@@ -43,24 +46,28 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 5,
     },
+    active: {
+      type: Boolean,
+      default: true,
+    },
     sellOutOfStock: {
       type: Boolean,
       default: false,
     },
-    availableQuantity: {
+    quantity: {
       type: Number,
     },
     physicalProduct: {
       type: Boolean,
       default: true,
     },
-    onSale:{
-      type:Boolean,
-      default:false
+    onSale: {
+      type: Boolean,
+      default: false,
     },
-    bestSeller:{
-      type:Boolean,
-      default:false
+    bestSeller: {
+      type: Boolean,
+      default: false,
     },
     images: [String],
     weight: Number,
@@ -70,12 +77,12 @@ const productSchema = new mongoose.Schema(
     deliveryTime: {
       type: Boolean,
       default: true,
-    }, 
+    },
     //will be used to set Option for delivery on specific date
     customWriting: {
       type: String,
       default: "Signature",
-    }, 
+    },
     //If empty then custom writting option will be disable and if not empty then we will take text input as text in string
     // reviews: [
     //   {
@@ -92,17 +99,19 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    createdAt:{
-      type:Date,
-      default:new Date()
+    sold: {
+      type: Number,
+      default: 0,
+    },
+    createdAt: {
+      type: Date,
+      default: new Date(),
     },
     variants: [
       {
         selectedOption: String,
-        tags: [
-          { id:Number,img:String, text: String,qty:Number}
-        ],
-      }
+        tags: [{ id: Number, img: String, text: String, qty: Number }],
+      },
     ],
   },
   {
@@ -185,10 +194,23 @@ reviewSchema.post(/^findOneAnd/, async function () {
   await this.Rew.constructor.calcAverageRatings(this.Rew.tour._id);
 });
 */
-productSchema.virtual('reviews', {
-  ref: 'Review',
-  foreignField: 'product',
-  localField: '_id'
+productSchema.pre("save", function (next) {
+  // variants: [
+  //   {
+  //     selectedOption: String,
+  //     tags: [
+  //       { id:Number,img:String, text: String,qty:Number}
+  //     ],
+  //   }
+  let total = 0;
+  this.variants.map((v) => v.tags.map((tag) => (total += tag.qty)));
+  this.quantity = total;
+  next();
+});
+productSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "product",
+  localField: "_id",
 });
 const Product = mongoose.model("Product", productSchema);
 module.exports = Product;

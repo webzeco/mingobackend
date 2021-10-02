@@ -20,6 +20,10 @@ Router.patch("/changeBestSellerStatus/:id",
 productController.changeBestSeller,
 );
 
+Router.patch("/update/:id",
+productController.updateProduct,
+);
+
 Router.patch("/changeProductStatus/:id",
 productController.changeStatusProduct,
 );

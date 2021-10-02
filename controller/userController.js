@@ -2,34 +2,33 @@ const catchAsync = require("../utils/catchAsync");
 const User = require("../models/userModel");
 const AppError = require("../utils/appError");
 const Cart = require("../models/cartModel");
-exports.getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find({ active: true });
-  res.status(200).json({ users });
+exports.getAllCustomers = catchAsync(async (req, res) => {
+  const users = await User.find({ active: true, role: "customer" });
+  console.log(users);
+  res.status(200).json({ data: users });
 });
 exports.getStaff = catchAsync(async (req, res) => {
-  const users = await User.find({ active: true ,role:"customer"});
-  res.status(200).json({ users });
+  const users = await User.find({ active: true, role: "user" });
+  res.status(200).json({ data: users });
 });
 
 exports.addUser = catchAsync(async (req, res) => {
-  const newUser = await User.create(
-    {
+  const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     contactNo: req.body.contactNo,
-    admin:req.user.id
-    }
-  );
-// add to embed way to add users id
+    admin: req.user.id,
+  });
+  // add to embed way to add users id
   res.status(201).json({
-    status: 'success',
-    newUser
+    status: "success",
+    newUser,
   });
 });
 
-exports.deleteUser = catchAsync(async (req, res,next) => {
+exports.deleteUser = catchAsync(async (req, res, next) => {
   const doc = await User.findOneAndUpdate(
     { name: req.params.name },
     { active: false },
@@ -46,10 +45,10 @@ exports.deleteUser = catchAsync(async (req, res,next) => {
   });
 });
 
-exports.addAddress = catchAsync(async (req, res,next) => {
-  const data=req.body.data;
+exports.addAddress = catchAsync(async (req, res, next) => {
+  const data = req.body.data;
   console.log(data);
-  const doc=await User.findByIdAndUpdate(req.params.id, {
+  const doc = await User.findByIdAndUpdate(req.params.id, {
     $push: { addresses: [data] },
   });
   // const doc = await User.findOneAndUpdate(
@@ -129,6 +128,6 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   }
   res.status(200).json({
     status: "success",
-    user: updatedUser,
+    data: updatedUser,
   });
 });

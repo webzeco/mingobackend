@@ -2,76 +2,97 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    unique: [true, "user must have unique name"],
-    required: [true, "user must have a  name"],
-  },
-  email: {
-    type: String,
-    require: [true, "user must have a email "],
-    unique: true,
-  },
-  image:{
-    type:String,
-    default:'default.jpg'
-  },
-  password: {
-    type: String,
-    required: [true, "user must have a password"],
-    minlength: 8,
-    select: false,
-  },
-  passwordConfirm: {
-    // only works on create and save
-    type: String,
-    required: [true, "User must have confirm  password"],
-    select: false,
-    validate: {
-      validator: function (el) {
-        return el === this.password;
-      },
-      message: "Does not match the password",
+const Order = require("./OrderModel");
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      unique: [true, "user must have unique name"],
+      required: [true, "user must have a  name"],
     },
-  },
-  role: {
-    type: String,
-    enum: ["admin", "user","customer"],
-    default: "customer",
-  },
-  contactNo:{
-    type:String,
-    // required:true
-  },
-   passwordChangedAt: {
-    type: Date,
-    select: true,
-  },
-  createdAt:{
-    type:Date,
-    default:new Date()
-  },
-  addresses:[{
-          firstName: String,
-          lastName:String,
-          compony:String,
-          address1:String,
-          address2:String,
-          city:String,
-          province:String,
-          zip:String,
-          contactNo:String
-  }],
-  passwordResetToken: String,
-  passwordResetExpires: Date,
-  active: {
-    type: Boolean,
-    default: true,
-  select: false,
-  },
-});
+    email: {
+      type: String,
+      require: [true, "user must have a email "],
+      unique: true,
+    },
+    image: {
+      type: String,
+      default: "default.jpg",
+    },
+    password: {
+      type: String,
+      required: [true, "user must have a password"],
+      minlength: 8,
+      select: false,
+    },
+    passwordConfirm: {
+      // only works on create and save
+      type: String,
+      required: [true, "User must have confirm  password"],
+      select: false,
+      validate: {
+        validator: function (el) {
+          return el === this.password;
+        },
+        message: "Does not match the password",
+      },
+    },
+    role: {
+      type: String,
+      enum: ["admin", "user", "customer"],
+      default: "customer",
+    },
+    contactNo: {
+      type: String,
+      // required:true
+    },
+    passwordChangedAt: {
+      type: Date,
+      select: true,
+    },
+    createdAt: {
+      type: Date,
+      default: new Date(),
+    },
+    addresses: [
+      {
+        firstName: String,
+        lastName: String,
+        compony: String,
+        address1: String,
+        address2: String,
+        city: String,
+        province: String,
+        zip: String,
+        contactNo: String,
+      },
+    ],
+    passwordResetToken: String,
+    passwordResetExpires: Date,
+    active: {
+      type: Boolean,
+      default: true,
+      select: false,
+    },
 
+    province: String,
+    city: String,
+    address: String,
+  },
+  {
+    toJSON: {
+      virtuals: true,
+    },
+    toObject: {
+      virtuals: true,
+    },
+  }
+);
+userSchema.virtual("orders", {
+  ref: "Order",
+  foreignField: "orderBy",
+  localField: "_id",
+});
 // bcrypt used for saving encrypted form of password to database
 userSchema.pre("save", async function (next) {
   // it only run when password is modified
@@ -143,5 +164,6 @@ userSchema.pre(/^find/, function (next) {
   });
   next();
 });
+
 const User = mongoose.model("User", userSchema);
 module.exports = User;

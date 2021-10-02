@@ -54,7 +54,7 @@ exports.addProduct = catchAsync(async (req, res) => {
 
 exports.deleteProduct = catchAsync(async (req, res) => {
   const id = req.params.id;
-  const product = await Product.findByIdAndDelete(id);
+  const product = await Product.findByIdAndUpdate(id,{active:false});
   res.status(200).json({
     status: "success",
     product,
@@ -65,7 +65,7 @@ exports.updateProduct = catchAsync(async (req, res) => {
   const { id } = req.params;
   const data = req.body;
   data.addedBy = req.user;
-  console.log({ data });
+  // console.log({ data });
   const product = await Product.findByIdAndUpdate(id, data);
   res.status(201).json({
     status: "success",
@@ -131,3 +131,11 @@ exports.getProductById=catchAsync(async (req, res) => {
     data: data,
   });
 });
+
+// exports.=catchAsync(async (req, res) => {
+//   const data=await Product.findById(req.params.id);
+//   res.status(200).json({
+//     status: "success",
+//     data: data,
+//   });
+// });

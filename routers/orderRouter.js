@@ -7,10 +7,8 @@ Router.post("/addOrder", orderController.addOrder);
 Router.use(authController.protect);
 Router.use(authController.restrictTo('admin','user'));
 Router.get("/allOrders", orderController.getAllOrders);
+Router.patch("/changeStatus/:id", orderController.changeStatus);
 Router.get("/detail/:id", orderController.getOrderDetail);
 Router.get("/userOrders", orderController.getUserOrdersRecord);
-
-
-
 
 module.exports = Router;
