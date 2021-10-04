@@ -30,50 +30,49 @@ exports.uploadImages = imagesUpload;
 // save to the database in image array
 
 exports.saveImage = catchAsync(async (req, res, next) => {
-      req.body.image=req.file?.filename;
+  req.body.image = req.file.filename;
   next();
 });
 
-
 exports.addBasket = catchAsync(async (req, res) => {
-    await Basket.create(req.body);
-    const basket = await Basket.find();
-    res.status(201).json({
-      status: "success",
-     data: basket,
-    });
-    });
-    exports.getAllBaskets = catchAsync(async (req, res) => {
-        const baskets = await Basket.find();
-        res.status(200).json({
-          status: "success",
-         data: baskets,
-        });
-        });
-        exports.getBaskets = catchAsync(async (req, res) => {
-            const baskets = await Basket.find({status:true});
-            res.status(200).json({
-              status: "success",
-             data: baskets,
-            });
-            }); 
+  await Basket.create(req.body);
+  const basket = await Basket.find();
+  res.status(201).json({
+    status: "success",
+    data: basket,
+  });
+});
+exports.getAllBaskets = catchAsync(async (req, res) => {
+  const baskets = await Basket.find();
+  res.status(200).json({
+    status: "success",
+    data: baskets,
+  });
+});
+exports.getBaskets = catchAsync(async (req, res) => {
+  const baskets = await Basket.find({ status: true });
+  res.status(200).json({
+    status: "success",
+    data: baskets,
+  });
+});
 
 exports.deleteBasket = catchAsync(async (req, res) => {
-  const id=req.params.id;
-const product = await Basket.findByIdAndDelete(id);
-res.status(204).json({
-  status: "success",
-  product,
+  const id = req.params.id;
+  const product = await Basket.findByIdAndDelete(id);
+  res.status(204).json({
+    status: "success",
+    product,
+  });
 });
-})
 
 exports.updateBasket = catchAsync(async (req, res) => {
-    const {status}=req.body;
-    console.log({status});
-    await Basket.findByIdAndUpdate(req.params.id,{status:status});
-    const data= await Basket.find();
-      res.status(200).json({
-        status: "success",
-        data: data,
-      });
-      });
+  const { status } = req.body;
+  console.log({ status });
+  await Basket.findByIdAndUpdate(req.params.id, { status: status });
+  const data = await Basket.find();
+  res.status(200).json({
+    status: "success",
+    data: data,
+  });
+});

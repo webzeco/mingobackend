@@ -85,7 +85,7 @@ exports.getUserOrdersRecord = catchAsync(async (req, res) => {
     .populate("orderBy")
     .populate("items.item");
   const requiredOrders = userOrders.filter(
-    (order) => order.orderBy?.email == req.user?.email
+    (order) => order.orderBy.email == req.user.email
   );
   res.status(200).json({
     status: "success",
